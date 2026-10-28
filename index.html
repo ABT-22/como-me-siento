@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>¿Cómo me siento?</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f5f5f5;
+      text-align: center;
+    }
+    h1 {
+      font-size: 48px;
+    }
+    .emociones {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+    }
+    button {
+      width: 220px;
+      padding: 16px;
+      background-color: white;
+      border: 8px solid;
+      border-radius: 24px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .alegria  { border-color: #f4c400; }
+    .tristeza { border-color: #2b7bd6; }
+    .enfado   { border-color: #d62b2b; }
+    .miedo    { border-color: #222222; }
+    .calma    { border-color: #2bab4f; }
+    .seleccionado {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 8px #333333;
+    }
+    /* NUEVO: tarjeta de la estrategia de calma */
+    #sugerencia {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #e6f7ea;
+      border: 8px solid #2bab4f;
+      border-radius: 24px;
+      font-size: 32px;
+      font-weight: bold;
+    }
+    .oculto {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>¿Cómo me siento hoy?</h1>
+
+  <div class="emociones">
+    <button class="alegria" onclick="elegir(this, 'Me siento contento')">
+      <img src="img/alegria.png" alt="Alegría" width="180"><br>
+      Contento
+    </button>
+
+    <button class="tristeza" onclick="elegir(this, 'Me siento triste')">
+      <img src="img/tristeza.png" alt="Tristeza" width="180"><br>
+      Triste
+    </button>
+
+    <button class="enfado" onclick="elegir(this, 'Me siento enfadado')">
+      <img src="img/enfado.png" alt="Enfado" width="180"><br>
+      Enfadado
+    </button>
+
+    <button class="miedo" onclick="elegir(this, 'Tengo miedo')">
+      <img src="img/miedo.png" alt="Miedo" width="180"><br>
+      Miedo
+    </button>
+
+    <button class="calma" onclick="elegir(this, 'Me siento tranquilo')">
+      <img src="img/calma.png" alt="Calma" width="180"><br>
+      Tranquilo
+    </button>
+  </div>
+
+  <!-- NUEVO: empieza oculta -->
+  <div id="sugerencia" class="oculto">
+    <img src="img/respirar.png" alt="Respirar" width="160"><br>
+    vamos a respirar despacio
+  </div>
+
+  <script>
+    function elegir(boton, frase) {
+      // 1. Quitar la marca a todas las tarjetas
+      const botones = document.querySelectorAll("button");
+      botones.forEach(b => b.classList.remove("seleccionado"));
+
+      // 2. Marcar la tarjeta pulsada
+      boton.classList.add("seleccionado");
+
+      // 3. NUEVO: decidir si hace falta la estrategia de calma
+      const sugerencia = document.getElementById("sugerencia");
+      const necesitaCalma =
+        boton.classList.contains("tristeza") ||
+        boton.classList.contains("enfado") ||
+        boton.classList.contains("miedo");
+
+      if (necesitaCalma) {
+        sugerencia.classList.remove("oculto");
+        frase = frase + ". vamos a respirar despacio.";
+      } else {
+        sugerencia.classList.add("oculto");
+      }
+
+      // 4. Decir la frase en voz alta
+      const voz = new SpeechSynthesisUtterance(frase);
+      voz.lang = "es-ES";
+      speechSynthesis.cancel();
+      speechSynthesis.speak(voz);
+    }
+  </script>
+</body>
+</html>
